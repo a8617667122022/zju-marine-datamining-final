@@ -1,0 +1,77 @@
+{
+  "input": "d:/trae/data/ais_moving.parquet",
+  "n_points": 1415790,
+  "rule": {
+    "nested_threshold": 0.85,
+    "min_share_ge_nmin": 0.1,
+    "n_min": 30,
+    "top_k": 100
+  },
+  "curve": [
+    {
+      "res": 4,
+      "n_occupied": 2416,
+      "median_n": 132.0,
+      "mean_n": 586.01,
+      "share_ge_nmin": 0.7343,
+      "capture_top100_pct": 44.35,
+      "nested_hit_rate": null
+    },
+    {
+      "res": 5,
+      "n_occupied": 9329,
+      "median_n": 40.0,
+      "mean_n": 151.76,
+      "share_ge_nmin": 0.5899,
+      "capture_top100_pct": 24.07,
+      "nested_hit_rate": 0.9077
+    },
+    {
+      "res": 6,
+      "n_occupied": 32926,
+      "median_n": 14.0,
+      "mean_n": 43.0,
+      "share_ge_nmin": 0.2558,
+      "capture_top100_pct": 13.34,
+      "nested_hit_rate": 0.9242
+    },
+    {
+      "res": 7,
+      "n_occupied": 105868,
+      "median_n": 5.0,
+      "mean_n": 13.37,
+      "share_ge_nmin": 0.0749,
+      "capture_top100_pct": 7.32,
+      "nested_hit_rate": 0.8923
+    },
+    {
+      "res": 8,
+      "n_occupied": 305700,
+      "median_n": 2.0,
+      "mean_n": 4.63,
+      "share_ge_nmin": 0.023,
+      "capture_top100_pct": 3.84,
+      "nested_hit_rate": 0.8571
+    },
+    {
+      "res": 9,
+      "n_occupied": 653022,
+      "median_n": 1.0,
+      "mean_n": 2.17,
+      "share_ge_nmin": 0.0062,
+      "capture_top100_pct": 2.27,
+      "nested_hit_rate": 0.7361
+    }
+  ],
+  "recommended_res": 6,
+  "next_res": 7,
+  "next_res_breaks_threshold": false,
+  "contract": {
+    "cell_unit": "H3",
+    "resolution": 6,
+    "typical_area_km2": 36.1291,
+    "density_definition": "count / cell_area_km2",
+    "hotspot_definition": "top 100 cells by density",
+    "note": "推荐档位为满足层次一致性与样本充分性的最细档；再细一格若跌破阈值，说明结论已被采样噪声主导。"
+  }
+}
