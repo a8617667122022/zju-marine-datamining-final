@@ -69,6 +69,24 @@ def level_curve(lat, lon, precomputed, res_min, res_max, n_min, topk=TOPK):
     return curve
 
 
+def topk_density(cells, area):
+    s = pd.Series(cells).value_counts()
+    d = s / area.reindex(s.index)
+    return set(d.nlargest(TOPK).index)
+
+
+def split_half_overlap(cells, area, seeds=10):
+    """同分辨率下随机对半，两次 Top-K 的重合率（可靠性天花板）。"""
+    n = len(cells)
+    ovs = []
+    for s in range(seeds):
+        mask = np.random.default_rng(s).random(n) < 0.5
+        t1 = topk_density(cells[mask], area)
+        t2 = topk_density(cells[~mask], area)
+        ovs.append(len(t1 & t2) / TOPK)
+    return float(np.mean(ovs)), float(np.std(ovs))
+
+
 def recommend(curve, threshold, min_share):
     """取同时满足一致性 + 样本充分性的最大档位。"""
     ok = [r for r in curve
@@ -96,6 +114,9 @@ def main():
                     help="样本充分单元的占比下限")
     ap.add_argument("--threshold", type=float, default=0.85,
                     help="层次一致性阈值")
+    ap.add_argument("--min-overlap", type=float, default=None,
+                    help="启用可靠性模式：要求 split-half 重合率不低于该值")
+    ap.add_argument("--seeds", type=int, default=10, help="split-half 重复次数")
     ap.add_argument("--out", default=None, help="可选：把 JSON 写到文件")
     args = ap.parse_args()
 
@@ -130,6 +151,29 @@ def main():
                      "再细一格若跌破阈值，说明结论已被采样噪声主导。"),
         },
     }
+
+    if args.min_overlap is not None:
+        rel = []
+        for rec in curve:
+            res = rec["res"]
+            cells = cells_for(lat, lon, res, precomputed)
+            area = pd.Series({c: h3.cell_area(c, unit="km^2")
+                              for c in pd.unique(cells)})
+            m, sd = split_half_overlap(cells, area, args.seeds)
+            rel.append({"res": res, "overlap_mean": round(m, 4),
+                        "overlap_std": round(sd, 4)})
+        ok = [r["res"] for r in rel if r["overlap_mean"] >= args.min_overlap]
+        result["reliability_curve"] = rel
+        result["recommended_res_reliability"] = max(ok) if ok else None
+        result["rule"]["min_split_half_overlap"] = args.min_overlap
+        if ok:
+            result["contract"]["resolution"] = max(ok)
+            result["contract"]["typical_area_km2"] = round(
+                h3.average_hexagon_area(max(ok), unit="km^2"), 4)
+            result["contract"]["note"] = (
+                "按 split-half 可靠性选择：取同分辨率下两半样本 Top-K 重合率"
+                "不低于给定下限的最细档；比拍一个一致性阈值更可解释。")
+
     text = json.dumps(result, ensure_ascii=False, indent=2)
     print(text)
     if args.out:

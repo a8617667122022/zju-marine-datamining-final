@@ -5,7 +5,8 @@
     "nested_threshold": 0.85,
     "min_share_ge_nmin": 0.1,
     "n_min": 30,
-    "top_k": 100
+    "top_k": 100,
+    "min_split_half_overlap": 0.9
   },
   "curve": [
     {
@@ -68,10 +69,43 @@
   "next_res_breaks_threshold": false,
   "contract": {
     "cell_unit": "H3",
-    "resolution": 6,
-    "typical_area_km2": 36.1291,
+    "resolution": 7,
+    "typical_area_km2": 5.1613,
     "density_definition": "count / cell_area_km2",
     "hotspot_definition": "top 100 cells by density",
-    "note": "推荐档位为满足层次一致性与样本充分性的最细档；再细一格若跌破阈值，说明结论已被采样噪声主导。"
-  }
+    "note": "按 split-half 可靠性选择：取同分辨率下两半样本 Top-K 重合率不低于给定下限的最细档；比拍一个一致性阈值更可解释。"
+  },
+  "reliability_curve": [
+    {
+      "res": 4,
+      "overlap_mean": 0.974,
+      "overlap_std": 0.0049
+    },
+    {
+      "res": 5,
+      "overlap_mean": 0.964,
+      "overlap_std": 0.008
+    },
+    {
+      "res": 6,
+      "overlap_mean": 0.958,
+      "overlap_std": 0.004
+    },
+    {
+      "res": 7,
+      "overlap_mean": 0.936,
+      "overlap_std": 0.0049
+    },
+    {
+      "res": 8,
+      "overlap_mean": 0.894,
+      "overlap_std": 0.015
+    },
+    {
+      "res": 9,
+      "overlap_mean": 0.824,
+      "overlap_std": 0.0206
+    }
+  ],
+  "recommended_res_reliability": 7
 }

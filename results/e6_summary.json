@@ -1,0 +1,63 @@
+{
+  "top_k": 100,
+  "seeds": 12,
+  "split": "random within 6-hour blocks",
+  "metric": "overlap = |A∩B|/K",
+  "rows": [
+    {
+      "res": 4,
+      "overlap_mean": 0.9775,
+      "overlap_std": 0.0072,
+      "jaccard_mean": 0.9561,
+      "cross_mean": null,
+      "cross_std": null,
+      "ssi": null
+    },
+    {
+      "res": 5,
+      "overlap_mean": 0.9592,
+      "overlap_std": 0.0119,
+      "jaccard_mean": 0.9218,
+      "cross_mean": 0.9007,
+      "cross_std": 0.0071,
+      "ssi": 0.939
+    },
+    {
+      "res": 6,
+      "overlap_mean": 0.9508,
+      "overlap_std": 0.0104,
+      "jaccard_mean": 0.9065,
+      "cross_mean": 0.8944,
+      "cross_std": 0.0095,
+      "ssi": 0.941
+    },
+    {
+      "res": 7,
+      "overlap_mean": 0.9392,
+      "overlap_std": 0.0155,
+      "jaccard_mean": 0.8857,
+      "cross_mean": 0.8952,
+      "cross_std": 0.0096,
+      "ssi": 0.953
+    },
+    {
+      "res": 8,
+      "overlap_mean": 0.8925,
+      "overlap_std": 0.0083,
+      "jaccard_mean": 0.806,
+      "cross_mean": 0.8539,
+      "cross_std": 0.0109,
+      "ssi": 0.957
+    },
+    {
+      "res": 9,
+      "overlap_mean": 0.8125,
+      "overlap_std": 0.0205,
+      "jaccard_mean": 0.6847,
+      "cross_mean": 0.7567,
+      "cross_std": 0.0161,
+      "ssi": 0.931
+    }
+  ],
+  "reading": "O_r 是同分辨率、换一半样本时的热点重合率，可视为该档的一致性上限；SSI=C_r/O_r 接近 1 表示细化带来的变化没有超出采样噪声。"
+}
