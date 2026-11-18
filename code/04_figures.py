@@ -27,7 +27,7 @@ plt.rcParams.update({
     "figure.dpi": 160,
     "savefig.dpi": 220,
     "font.size": 10,
-    "font.family": "DejaVu Sans",
+    "font.family": ["Microsoft YaHei", "DejaVu Sans"],
     "axes.titlesize": 11,
     "axes.titleweight": "bold",
     "axes.labelsize": 10,
@@ -81,17 +81,17 @@ def fig1_area_lat():
                    color=c, label=f"res {res}")
         ax[1].plot(sub["lat_band"] + 5, sub["area_cv"], marker="o", ms=4, color=c)
     ax[0].set_yscale("log")
-    ax[0].set_xlabel("Latitude band center (°N)")
-    ax[0].set_ylabel("Mean cell area (km², log)")
-    ax[0].set_title("(a) H3 area is nearly latitude-invariant")
+    ax[0].set_xlabel("纬度带中心（°N）")
+    ax[0].set_ylabel("单元面积均值（km²，对数）")
+    ax[0].set_title("（a）H3 面积几乎没有纬度趋势")
     ax[0].legend(fontsize=7, ncol=2, loc="lower right")
-    ax[0].annotate("flat curves = no latitude trend\n(not strictly equal-area)", xy=(35, 5),
+    ax[0].annotate("曲线平直 = 无纬度趋势\n（但不等于严格等积）", xy=(35, 5),
                    xytext=(18, 0.9), fontsize=7.5, color=NAVY,
                    arrowprops=dict(arrowstyle="->", color=NAVY, lw=0.8))
 
-    ax[1].set_xlabel("Latitude band center (°N)")
-    ax[1].set_ylabel("Area CV within band")
-    ax[1].set_title("(b) Within-band dispersion shrinks toward mid-latitudes")
+    ax[1].set_xlabel("纬度带中心（°N）")
+    ax[1].set_ylabel("带内面积变异系数")
+    ax[1].set_title("（b）中纬度带内离散度更小")
     for a in ax:
         despine(a)
     fig.tight_layout()
@@ -108,24 +108,24 @@ def fig2_rsc():
 
     fig, ax = plt.subplots(1, 2, figsize=(10.5, 4.2))
     ax[0].plot(mv["res"], mv["nested_hit_rate"], "o-", color=NAVY, lw=2,
-               label="B: moving (SOG ≥ 3 kn)")
+               label="B：航行船（SOG ≥ 3 kn）")
     ax[0].plot(al["res"], al["nested_hit_rate"], "s--", color=RED, lw=1.8,
-               label="A: all records")
+               label="A：全量记录")
     ax[0].axvspan(8.6, 9.25, color=RED, alpha=0.06)
-    ax[0].annotate("cliff at res 9", xy=(9, 0.747), xytext=(7.6, 0.70),
+    ax[0].annotate("res 9 断崖", xy=(9, 0.747), xytext=(7.6, 0.70),
                    fontsize=9, color=RED,
                    arrowprops=dict(arrowstyle="->", color=RED, lw=1))
-    ax[0].set_xlabel("H3 resolution")
-    ax[0].set_ylabel("Nested hit rate")
-    ax[0].set_title("(a) Slow decay, then a cliff")
+    ax[0].set_xlabel("H3 分辨率")
+    ax[0].set_ylabel("嵌套一致率")
+    ax[0].set_title("（a）缓慢衰减后突然崩塌")
     ax[0].set_ylim(0.65, 1.0)
     ax[0].legend(fontsize=8, loc="lower left")
 
-    ax[1].plot(mv["res"], mv["iou50_prev"], "o-", color=NAVY, lw=2, label="B: moving")
-    ax[1].plot(al["res"], al["iou50_prev"], "s--", color=RED, lw=1.8, label="A: all")
-    ax[1].set_xlabel("H3 resolution")
-    ax[1].set_ylabel("Equal-mass IoU vs previous level")
-    ax[1].set_title("(b) No convergence to a plateau")
+    ax[1].plot(mv["res"], mv["iou50_prev"], "o-", color=NAVY, lw=2, label="B：航行船")
+    ax[1].plot(al["res"], al["iou50_prev"], "s--", color=RED, lw=1.8, label="A：全量")
+    ax[1].set_xlabel("H3 分辨率")
+    ax[1].set_ylabel("等质量 IoU（对上一档）")
+    ax[1].set_title("（b）不存在收敛平台")
     ax[1].set_ylim(0.0, 0.5)
     ax[1].legend(fontsize=8, loc="upper right")
     for a in ax:
@@ -144,24 +144,24 @@ def fig3_reliability():
                            gridspec_kw={"width_ratios": [1.65, 1]})
 
     ax[0].plot(e6["res"], e6["overlap_mean"], "o-", color=TEAL, lw=2.4,
-               label="O$_r$: split-half reproducibility (ceiling)")
+               label="O$_r$：同尺度可靠性天花板")
     ax[0].fill_between(e6["res"], e6["overlap_mean"] - e6["overlap_std"],
                        e6["overlap_mean"] + e6["overlap_std"], color=TEAL, alpha=0.15)
     sub = e6.dropna(subset=["cross_mean"])
     ax[0].plot(sub["res"], sub["cross_mean"], "s--", color=ORANGE, lw=2.2,
-               label="C$_r$: cross-scale agreement")
+               label="C$_r$：跨尺度一致率")
     ax[0].fill_between(sub["res"], sub["cross_mean"] - sub["cross_std"],
                        sub["cross_mean"] + sub["cross_std"], color=ORANGE, alpha=0.15)
     for _, r in e6.iterrows():
         ax[0].annotate(f"{r['overlap_mean']:.2f}", (r["res"], r["overlap_mean"]),
                        textcoords="offset points", xytext=(0, 8), ha="center",
                        fontsize=7.5, color=TEAL)
-    ax[0].set_xlabel("H3 resolution")
-    ax[0].set_ylabel("Top-100 agreement")
-    ax[0].set_title("(a) Cross-scale agreement tracks its own reliability ceiling")
+    ax[0].set_xlabel("H3 分辨率")
+    ax[0].set_ylabel("Top-100 重合率")
+    ax[0].set_title("（a）跨尺度一致率紧跟自身天花板")
     ax[0].set_ylim(0.7, 1.02)
     ax[0].legend(fontsize=8, loc="lower left")
-    ax[0].annotate("ceiling itself collapses\n(≈1 point per cell)",
+    ax[0].annotate("天花板自身坍塌\n（每格约 1 点）",
                    xy=(9, 0.813), xytext=(7.2, 0.74), fontsize=8, color=TEAL,
                    arrowprops=dict(arrowstyle="->", color=TEAL, lw=0.9))
 
@@ -172,11 +172,11 @@ def fig3_reliability():
         ax[1].annotate(f"{r['ssi']:.2f}", (r["res"], r["ssi"]),
                        textcoords="offset points", xytext=(0, -14), ha="center",
                        fontsize=8, color=NAVY)
-    ax[1].set_xlabel("H3 resolution")
+    ax[1].set_xlabel("H3 分辨率")
     ax[1].set_ylabel("SSI = C$_r$ / O$_r$")
-    ax[1].set_title("(b) Scale penalty is constant")
+    ax[1].set_title("（b）尺度惩罚基本恒定")
     ax[1].set_ylim(0.85, 1.03)
-    ax[1].annotate("≈ 6% fixed scale penalty", xy=(5.15, 0.905), fontsize=8.5,
+    ax[1].annotate("约 6% 的固定尺度惩罚", xy=(5.15, 0.905), fontsize=8.5,
                    color=NAVY)
     for a in ax:
         despine(a)
@@ -218,9 +218,9 @@ def fig4_hotspots():
         ax.set_xlim(PORT[0], PORT[1])
         ax.set_ylim(PORT[2], PORT[3])
         ax.set_aspect("equal", adjustable="box")
-        ax.set_title(f"res {res} — {len(sub):,} occupied cells")
-        ax.set_xlabel("Longitude")
-        ax.set_ylabel("Latitude")
+        ax.set_title(f"res {res} —— {len(sub):,} 个占用单元")
+        ax.set_xlabel("经度")
+        ax.set_ylabel("纬度")
         despine(ax)
 
     # 全国定位小图
@@ -233,7 +233,7 @@ def fig4_hotspots():
     axin.set_xticks([])
     axin.set_yticks([])
     axin.set_facecolor("#f7f9fb")
-    axin.set_title("study area", fontsize=7)
+    axin.set_title("研究区", fontsize=7)
     for s in axin.spines.values():
         s.set_visible(True)
         s.set_linewidth(0.6)
@@ -241,8 +241,8 @@ def fig4_hotspots():
     fig.subplots_adjust(right=0.88, hspace=0.30, wspace=0.20, top=0.92)
     cax = fig.add_axes([0.905, 0.15, 0.018, 0.68])
     cb = fig.colorbar(sc, cax=cax)
-    cb.set_label("Density percentile within panel")
-    fig.suptitle("Same harbour, four resolutions: hotspots dissolve into AIS tracks",
+    cb.set_label("面板内密度分位")
+    fig.suptitle("同一港口、四种分辨率：热点逐渐碎成 AIS 航迹",
                  fontsize=12, fontweight="bold", y=0.975)
     fig.savefig(f"{FIG}/fig3_hotspots.png")
     plt.close(fig)
@@ -254,23 +254,23 @@ def fig4_hotspots():
 def fig5_sufficiency():
     e3 = pd.read_csv(f"{RES}/e3_sample.csv")
     fig, ax = plt.subplots(figsize=(6.8, 4.2))
-    ax.plot(e3["res"], e3["mean_n"], "o-", color=NAVY, lw=2, label="Mean points per cell")
+    ax.plot(e3["res"], e3["mean_n"], "o-", color=NAVY, lw=2, label="每格点数均值")
     ax.plot(e3["res"], e3["median_n"], "s--", color=ORANGE, lw=1.8,
-            label="Median points per cell")
+            label="每格点数中位数")
     ax.axhline(30, color=RED, ls=":", lw=1.2)
     ax.text(4.05, 33, "n_min = 30", color=RED, fontsize=8)
     ax.set_yscale("log")
-    ax.set_xlabel("H3 resolution")
-    ax.set_ylabel("Points per occupied cell (log)")
+    ax.set_xlabel("H3 分辨率")
+    ax.set_ylabel("每格点数（对数）")
     ax2 = ax.twinx()
     ax2.bar(e3["res"], e3["share_ge_nmin"], width=0.45, alpha=0.22,
-            color=GREEN, label="Share of cells with n ≥ 30")
-    ax2.set_ylabel("Share of cells with n ≥ 30", color=GREEN)
+            color=GREEN, label="样本充足（n ≥ 30）单元占比")
+    ax2.set_ylabel("样本充足（n ≥ 30）单元占比", color=GREEN)
     ax2.set_ylim(0, 1)
     ax2.grid(False)
     despine(ax)
     ax.legend(loc="upper right", fontsize=8)
-    ax.set_title("Sample dilution: median drops to 1 point at res 9")
+    ax.set_title("样本稀释：res 9 每格中位数降至 1 点")
     fig.tight_layout()
     fig.savefig(f"{FIG}/fig4_sufficiency.png")
     plt.close(fig)
@@ -286,11 +286,11 @@ def fig6_temporal():
     for (b, sub), c in zip(e4.groupby("block"), colors):
         sub = sub.sort_values("res")
         ax.plot(sub["res"], sub["nested_hit_rate"], "o-", color=c, lw=1.6,
-                label=f"block {b} ({b*6:02d}:00–{b*6+6:02d}:00)")
-    ax.set_xlabel("H3 resolution")
-    ax.set_ylabel("Nested hit rate")
+                label=f"时段 {b}（{b*6:02d}:00–{b*6+6:02d}:00）")
+    ax.set_xlabel("H3 分辨率")
+    ax.set_ylabel("嵌套一致率")
     ax.set_ylim(0.7, 1.0)
-    ax.set_title("Cliff position moves with the time window")
+    ax.set_title("断崖位置随时段移动")
     ax.legend(fontsize=8, loc="lower left")
     ax.annotate("res 9: 0.867 → 0.747", xy=(9, 0.747), xytext=(6.6, 0.73),
                 fontsize=8, color=RED,
@@ -315,9 +315,9 @@ def fig7_grids():
         ax[0].plot(s["median_area_km2"], s["area_cv"], marker=mk, color=color,
                    lw=1.6, label=sysname)
     ax[0].set_xscale("log")
-    ax[0].set_xlabel("Median cell area (km², log)")
-    ax[0].set_ylabel("Area CV (occupied cells)")
-    ax[0].set_title("(a) Local footprint (25–49°N): H3 is not the most uniform")
+    ax[0].set_xlabel("单元面积中位数（km²，对数）")
+    ax[0].set_ylabel("面积变异系数（占用单元）")
+    ax[0].set_title("（a）局部范围（25–49°N）：H3 并非最均匀")
     ax[0].legend(fontsize=8)
 
     systems = ["h3", "geohash", "latlon"]
@@ -327,8 +327,8 @@ def fig7_grids():
     for b, v in zip(bars, vals):
         ax[1].text(b.get_x() + b.get_width() / 2, v + 0.08, f"{v:.2f}×",
                    ha="center", fontsize=9)
-    ax[1].set_ylabel("Max / min cell area (global)")
-    ax[1].set_title("(b) Global sweep: H3 is ~3× more uniform")
+    ax[1].set_ylabel("全球单元面积最大/最小比")
+    ax[1].set_title("（b）全球扫描：H3 均匀性约为经纬网格的 3 倍")
     ax[1].set_ylim(0, max(vals) * 1.18)
     for a in ax:
         despine(a)
@@ -348,26 +348,26 @@ def fig8_persistence():
         s7 = json.load(f)
 
     fig = plt.figure(figsize=(11, 8.8))
-    gs = fig.add_gridspec(2, 2, height_ratios=[1, 1.12], hspace=0.30, wspace=0.42,
-                          left=0.07, right=0.965, top=0.93, bottom=0.06)
+    gs = fig.add_gridspec(2, 2, height_ratios=[1, 1.12], hspace=0.32, wspace=0.62,
+                          left=0.075, right=0.955, top=0.93, bottom=0.06)
 
     # (a) 寿命分布
     ax = fig.add_subplot(gs[0, 0])
     ks = sorted(int(k) for k in s7["cells_by_longest_run"])
     cnt = [s7["cells_by_longest_run"][str(k)] for k in ks]
     pct = [s7["points_by_longest_run_pct"][str(k)] for k in ks]
-    ax.bar(ks, cnt, color=GRAY, alpha=0.55, width=0.62, label="res-9 cells")
+    ax.bar(ks, cnt, color=GRAY, alpha=0.55, width=0.62, label="res 9 单元")
     ax.set_yscale("log")
-    ax.set_xlabel("Longest consecutive run as hotspot (levels)")
-    ax.set_ylabel("Number of res-9 cells (log)")
+    ax.set_xlabel("连续成为热点的最长层数")
+    ax.set_ylabel("res 9 单元数（对数）")
     ax2 = ax.twinx()
-    ax2.plot(ks, pct, "o-", color=RED, lw=1.8, ms=5, label="share of points")
-    ax2.set_ylabel("Share of points (%)", color=RED)
+    ax2.plot(ks, pct, "o-", color=RED, lw=1.8, ms=5, label="点数占比")
+    ax2.set_ylabel("点数占比（%）", color=RED)
     ax2.set_ylim(0, 62)
     ax2.grid(False)
     ax.axvline(3.5, color=NAVY, ls="--", lw=1.1)
-    ax.text(3.62, 2.0e4, "core\n(run ≥ 4)", fontsize=8, color=NAVY)
-    ax.set_title("(a) Only 0.3% of cells are persistent")
+    ax.text(3.62, 2.0e4, "持久核心\n（连续 ≥ 4 层）", fontsize=8, color=NAVY)
+    ax.set_title("（a）仅 0.3% 的单元是持久的")
     ax.set_xticks(ks)
     despine(ax)
 
@@ -376,7 +376,7 @@ def fig8_persistence():
     bg = agg[agg["max_run"] == 0]
     fg = agg[agg["max_run"] > 0]
     ax.scatter(bg["lon"], bg["lat"], s=1.4, c="#e3e7ec", linewidths=0,
-               label="never persistent")
+               label="从未持久")
     sc = ax.scatter(fg["lon"], fg["lat"], s=np.clip(fg["n"] / 350, 4, 70),
                     c=fg["max_run"], cmap="YlOrRd", vmin=0, vmax=6,
                     linewidths=0.25, edgecolors="#7a4a10", alpha=0.9)
@@ -384,11 +384,11 @@ def fig8_persistence():
     ax.set_xlim(-128, -72)
     ax.set_ylim(23, 50)
     ax.set_aspect("equal", adjustable="box")
-    ax.set_xlabel("Longitude")
-    ax.set_ylabel("Latitude")
-    ax.set_title("(b) The persistent core (aggregated to res 7); marker area ∝ points")
+    ax.set_xlabel("经度")
+    ax.set_ylabel("纬度")
+    ax.set_title("（b）持久核心（聚合至 res 7），点面积与点数成正比")
     cb = fig.colorbar(sc, ax=ax, fraction=0.022, pad=0.012, aspect=28)
-    cb.set_label("max run (levels)", fontsize=8)
+    cb.set_label("最长连续层数", fontsize=8)
     cb.ax.tick_params(labelsize=7)
     ax.legend(fontsize=7.5, loc="lower left", markerscale=3)
     despine(ax)
@@ -397,21 +397,21 @@ def fig8_persistence():
     ax = fig.add_subplot(gs[0, 1])
     b = prof["birth"].to_numpy()
     ax.bar(b, prof["points_pct"], color=TEAL, alpha=0.75, width=0.6)
-    ax.set_xlabel("Birth level (first entering Top-100)")
-    ax.set_ylabel("Share of AIS points (%)", color=TEAL)
+    ax.set_xlabel("出生档位（首次进入 Top-100）")
+    ax.set_ylabel("AIS 点数占比（%）", color=TEAL)
     ax.set_ylim(0, 56)
     ax.set_xticks(range(4, 10))
     ax2 = ax.twinx()
     ax2.plot(b, prof["median_n"], "D--", color=NAVY, lw=1.4, ms=5)
-    ax2.set_ylabel("Median points per cell", color=NAVY)
+    ax2.set_ylabel("每格点数中位数", color=NAVY)
     ax2.grid(False)
-    ax.set_title("(c) Coarse 'hotspots' swallow 44% of points")
-    ax.annotate("res 4 Top-100:\n44% of points,\nmedian n = 1",
+    ax.set_title("（c）粗档“热点”吞掉 44% 的点")
+    ax.annotate("res 4 Top-100：\n44% 的点，\n每格中位数 1",
                 xy=(4.05, 40), xytext=(5.05, 30), fontsize=7.8, color=NAVY,
                 arrowprops=dict(arrowstyle="->", color=NAVY, lw=0.8))
     despine(ax)
 
-    fig.suptitle("Persistence of hotspots across the H3 hierarchy", fontsize=12,
+    fig.suptitle("热点在 H3 层级中的持久性", fontsize=12,
                  fontweight="bold", y=0.985)
     fig.savefig(f"{FIG}/fig8_persistence.png")
     plt.close(fig)
@@ -425,9 +425,9 @@ def fig9_crosscheck():
     with open(f"{RES}/e8_summary.json", encoding="utf-8") as f:
         s8 = json.load(f)
 
-    fig, ax = plt.subplots(1, 3, figsize=(13.4, 4.9),
-                           gridspec_kw={"width_ratios": [1.1, 1.1, 1.15]})
-    fig.subplots_adjust(left=0.055, right=0.955, top=0.90, bottom=0.14, wspace=0.42)
+    fig, ax = plt.subplots(1, 3, figsize=(14.2, 4.9),
+                           gridspec_kw={"width_ratios": [1.05, 1.05, 1.2]})
+    fig.subplots_adjust(left=0.062, right=0.94, top=0.90, bottom=0.14, wspace=0.55)
 
     # (a) 局部方差比
     ax[0].plot(e8["res"], e8["lv"], "o-", color=NAVY, lw=2.2, ms=6)
@@ -435,52 +435,52 @@ def fig9_crosscheck():
     ax[0].scatter([j_lv], [e8.loc[e8["res"] == j_lv, "lv"].iat[0]], s=150,
                   facecolors="none", edgecolors=RED, lw=2, zorder=5)
     ax[0].axvspan(j_lv - 0.18, j_lv + 0.18, color=RED, alpha=0.07)
-    ax[0].annotate(f"trough at res {j_lv}", xy=(j_lv, 0.44), xytext=(4.3, 0.47),
+    ax[0].annotate(f"res {j_lv} 处触底", xy=(j_lv, 0.44), xytext=(4.3, 0.47),
                    fontsize=8.5, color=RED,
                    arrowprops=dict(arrowstyle="->", color=RED, lw=0.9))
-    ax[0].set_xlabel("H3 resolution")
-    ax[0].set_ylabel("Local variance ratio LV")
-    ax[0].set_title("(a) Feature scale: LV trough")
+    ax[0].set_xlabel("H3 分辨率")
+    ax[0].set_ylabel("局部方差比 LV")
+    ax[0].set_title("（a）特征尺度：LV 谷底")
     ax[0].set_ylim(0.38, 1.0)
-    ax[0].text(4.05, 0.96, "LV → 1: local ≈ global\n(noise dominates)",
+    ax[0].text(4.05, 0.96, "LV → 1：局部≈全局\n（噪声主导）",
                fontsize=7.5, color=GRAY)
 
     # (b) 支撑度与质量效率
     ax[1].bar(e8["res"], e8["support_pct"], color=GREEN, alpha=0.6, width=0.55,
-              label="cells with n ≥ 30 (%)")
+              label="n ≥ 30 的单元占比（%）")
     ax[1].axhline(50, color=GREEN, ls=":", lw=1.1)
     ax[1].text(4.05, 52, "50%", fontsize=7.5, color=GREEN)
-    ax[1].set_xlabel("H3 resolution")
-    ax[1].set_ylabel("Share of cells with n ≥ 30 (%)", color=GREEN)
+    ax[1].set_xlabel("H3 分辨率")
+    ax[1].set_ylabel("n ≥ 30 单元占比（%）", color=GREEN, fontsize=8.5)
     ax[1].set_ylim(0, 85)
     ax2 = ax[1].twinx()
     ax2.plot(e8["res"], e8["cells_for_10pct"], "s--", color=ORANGE, lw=1.8, ms=5)
     ax2.set_yscale("log")
-    ax2.set_ylabel("Cells needed for 10% of points (log)", color=ORANGE)
+    ax2.set_ylabel("覆盖 10% 点数所需格数（对数）", color=ORANGE, fontsize=8.5)
     ax2.grid(False)
-    ax[1].set_title("(b) Support collapses, cost explodes")
+    ax[1].set_title("（b）支撑度坍塌，代价飙升")
     despine(ax[1])
 
     # (c) 三条判据的推荐档
-    rows = [("J1 reliability\n(O$_r$ ≥ 0.90)", s8["criteria"]["J1_reliability"]["recommend"]),
-            ("J2 support\n(n ≥ 30 in ≥ 50%)", s8["criteria"]["J2_support"]["recommend"]),
-            ("J3 local variance\n(LV trough)", s8["criteria"]["J3_local_variance"]["recommend"])]
+    rows = [("J1 可靠性\n（O$_r$ ≥ 0.90）", s8["criteria"]["J1_reliability"]["recommend"]),
+            ("J2 支撑度\n（n ≥ 30 占比 ≥ 50%）", s8["criteria"]["J2_support"]["recommend"]),
+            ("J3 局部方差\n（LV 谷底）", s8["criteria"]["J3_local_variance"]["recommend"])]
     ax[2].axvspan(4.6, 7.4, color=NAVY, alpha=0.07)
     for i, (name, rec) in enumerate(rows):
         y = len(rows) - 1 - i
-        ax[2].hlines(y, 3.3, 9.5, color="#cfd6df", lw=1.2, zorder=0)
+        ax[2].hlines(y, 3.9, 9.4, color="#cfd6df", lw=1.2, zorder=0)
         ax[2].scatter([rec], [y], s=210, color=TEAL, zorder=3, edgecolors="white")
-        ax[2].text(3.22, y + 0.18, name, fontsize=8, va="bottom", color="#2b3a4a")
-        ax[2].text(rec, y - 0.32, f"res {rec}", fontsize=8.5, ha="center", color=TEAL)
-    ax[2].set_xlim(3.15, 9.6)
+        ax[2].text(3.98, y + 0.12, name, fontsize=7.8, va="bottom", color="#2b3a4a")
+        ax[2].text(rec, y - 0.30, f"res {rec}", fontsize=8.5, ha="center", color=TEAL)
+    ax[2].set_xlim(3.8, 9.55)
     ax[2].set_ylim(-0.75, 2.95)
     ax[2].set_yticks([])
     ax[2].set_xticks(range(4, 10))
-    ax[2].set_xlabel("H3 resolution")
-    ax[2].set_title("(c) Three independent criteria agree on 5–7")
+    ax[2].set_xlabel("H3 分辨率")
+    ax[2].set_title("（c）三条独立判据都落在 5–7")
     ax[2].grid(False)
     despine(ax[2])
-    ax[2].text(6.4, -0.62, "no criterion supports res 8 or 9", fontsize=8,
+    ax[2].text(6.6, -0.60, "无判据支持 res 8 / 9", fontsize=7.8,
                ha="center", color=RED)
 
     fig.savefig(f"{FIG}/fig9_crosscheck.png")
