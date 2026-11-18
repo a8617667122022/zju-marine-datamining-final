@@ -1,0 +1,40 @@
+{
+  "rule": "equal-mass: 累计覆盖 1% 点数的最少单元集合",
+  "sets": [
+    {
+      "res": 4,
+      "k_cells": 1,
+      "point_coverage_pct": 2.106
+    },
+    {
+      "res": 5,
+      "k_cells": 1,
+      "point_coverage_pct": 1.367
+    },
+    {
+      "res": 6,
+      "k_cells": 2,
+      "point_coverage_pct": 1.273
+    },
+    {
+      "res": 7,
+      "k_cells": 5,
+      "point_coverage_pct": 1.026
+    },
+    {
+      "res": 8,
+      "k_cells": 11,
+      "point_coverage_pct": 1.055
+    },
+    {
+      "res": 9,
+      "k_cells": 13,
+      "point_coverage_pct": 1.03
+    }
+  ],
+  "persistent_cells": 0,
+  "persistent_points_pct": 0.0,
+  "median_n_persistent": NaN,
+  "share_leaves_never_hot_pct": 99.13,
+  "res9_set_persistent_pct": 0.0
+}

@@ -338,6 +338,156 @@ def fig7_grids():
     print("fig7 done")
 
 
+# ---------- 图 8：层级持久热点（原创点 B） ----------
+
+def fig8_persistence():
+    cells = pd.read_parquet(f"{RES}/e7_persistence_cells.parquet")
+    prof = pd.read_csv(f"{RES}/e7_birth_profile.csv")
+    agg = pd.read_csv(f"{RES}/e7_persistent_res7.csv")
+    with open(f"{RES}/e7_summary.json", encoding="utf-8") as f:
+        s7 = json.load(f)
+
+    fig = plt.figure(figsize=(11, 8.8))
+    gs = fig.add_gridspec(2, 2, height_ratios=[1, 1.12], hspace=0.30, wspace=0.42,
+                          left=0.07, right=0.965, top=0.93, bottom=0.06)
+
+    # (a) 寿命分布
+    ax = fig.add_subplot(gs[0, 0])
+    ks = sorted(int(k) for k in s7["cells_by_longest_run"])
+    cnt = [s7["cells_by_longest_run"][str(k)] for k in ks]
+    pct = [s7["points_by_longest_run_pct"][str(k)] for k in ks]
+    ax.bar(ks, cnt, color=GRAY, alpha=0.55, width=0.62, label="res-9 cells")
+    ax.set_yscale("log")
+    ax.set_xlabel("Longest consecutive run as hotspot (levels)")
+    ax.set_ylabel("Number of res-9 cells (log)")
+    ax2 = ax.twinx()
+    ax2.plot(ks, pct, "o-", color=RED, lw=1.8, ms=5, label="share of points")
+    ax2.set_ylabel("Share of points (%)", color=RED)
+    ax2.set_ylim(0, 62)
+    ax2.grid(False)
+    ax.axvline(3.5, color=NAVY, ls="--", lw=1.1)
+    ax.text(3.62, 2.0e4, "core\n(run ≥ 4)", fontsize=8, color=NAVY)
+    ax.set_title("(a) Only 0.3% of cells are persistent")
+    ax.set_xticks(ks)
+    despine(ax)
+
+    # (b) 持久核心地图
+    ax = fig.add_subplot(gs[1, :])
+    bg = agg[agg["max_run"] == 0]
+    fg = agg[agg["max_run"] > 0]
+    ax.scatter(bg["lon"], bg["lat"], s=1.4, c="#e3e7ec", linewidths=0,
+               label="never persistent")
+    sc = ax.scatter(fg["lon"], fg["lat"], s=np.clip(fg["n"] / 350, 4, 70),
+                    c=fg["max_run"], cmap="YlOrRd", vmin=0, vmax=6,
+                    linewidths=0.25, edgecolors="#7a4a10", alpha=0.9)
+    add_coast(ax, lw=0.55)
+    ax.set_xlim(-128, -72)
+    ax.set_ylim(23, 50)
+    ax.set_aspect("equal", adjustable="box")
+    ax.set_xlabel("Longitude")
+    ax.set_ylabel("Latitude")
+    ax.set_title("(b) The persistent core (aggregated to res 7); marker area ∝ points")
+    cb = fig.colorbar(sc, ax=ax, fraction=0.022, pad=0.012, aspect=28)
+    cb.set_label("max run (levels)", fontsize=8)
+    cb.ax.tick_params(labelsize=7)
+    ax.legend(fontsize=7.5, loc="lower left", markerscale=3)
+    despine(ax)
+
+    # (c) 出生剖面：粗档 Top-100 几乎囊括一切
+    ax = fig.add_subplot(gs[0, 1])
+    b = prof["birth"].to_numpy()
+    ax.bar(b, prof["points_pct"], color=TEAL, alpha=0.75, width=0.6)
+    ax.set_xlabel("Birth level (first entering Top-100)")
+    ax.set_ylabel("Share of AIS points (%)", color=TEAL)
+    ax.set_ylim(0, 56)
+    ax.set_xticks(range(4, 10))
+    ax2 = ax.twinx()
+    ax2.plot(b, prof["median_n"], "D--", color=NAVY, lw=1.4, ms=5)
+    ax2.set_ylabel("Median points per cell", color=NAVY)
+    ax2.grid(False)
+    ax.set_title("(c) Coarse 'hotspots' swallow 44% of points")
+    ax.annotate("res 4 Top-100:\n44% of points,\nmedian n = 1",
+                xy=(4.05, 40), xytext=(5.05, 30), fontsize=7.8, color=NAVY,
+                arrowprops=dict(arrowstyle="->", color=NAVY, lw=0.8))
+    despine(ax)
+
+    fig.suptitle("Persistence of hotspots across the H3 hierarchy", fontsize=12,
+                 fontweight="bold", y=0.985)
+    fig.savefig(f"{FIG}/fig8_persistence.png")
+    plt.close(fig)
+    print("fig8 done")
+
+
+# ---------- 图 9：三判据交叉验证（原创点 C） ----------
+
+def fig9_crosscheck():
+    e8 = pd.read_csv(f"{RES}/e8_crosscheck.csv")
+    with open(f"{RES}/e8_summary.json", encoding="utf-8") as f:
+        s8 = json.load(f)
+
+    fig, ax = plt.subplots(1, 3, figsize=(13.4, 4.9),
+                           gridspec_kw={"width_ratios": [1.1, 1.1, 1.15]})
+    fig.subplots_adjust(left=0.055, right=0.955, top=0.90, bottom=0.14, wspace=0.42)
+
+    # (a) 局部方差比
+    ax[0].plot(e8["res"], e8["lv"], "o-", color=NAVY, lw=2.2, ms=6)
+    j_lv = s8["criteria"]["J3_local_variance"]["recommend"]
+    ax[0].scatter([j_lv], [e8.loc[e8["res"] == j_lv, "lv"].iat[0]], s=150,
+                  facecolors="none", edgecolors=RED, lw=2, zorder=5)
+    ax[0].axvspan(j_lv - 0.18, j_lv + 0.18, color=RED, alpha=0.07)
+    ax[0].annotate(f"trough at res {j_lv}", xy=(j_lv, 0.44), xytext=(4.3, 0.47),
+                   fontsize=8.5, color=RED,
+                   arrowprops=dict(arrowstyle="->", color=RED, lw=0.9))
+    ax[0].set_xlabel("H3 resolution")
+    ax[0].set_ylabel("Local variance ratio LV")
+    ax[0].set_title("(a) Feature scale: LV trough")
+    ax[0].set_ylim(0.38, 1.0)
+    ax[0].text(4.05, 0.96, "LV → 1: local ≈ global\n(noise dominates)",
+               fontsize=7.5, color=GRAY)
+
+    # (b) 支撑度与质量效率
+    ax[1].bar(e8["res"], e8["support_pct"], color=GREEN, alpha=0.6, width=0.55,
+              label="cells with n ≥ 30 (%)")
+    ax[1].axhline(50, color=GREEN, ls=":", lw=1.1)
+    ax[1].text(4.05, 52, "50%", fontsize=7.5, color=GREEN)
+    ax[1].set_xlabel("H3 resolution")
+    ax[1].set_ylabel("Share of cells with n ≥ 30 (%)", color=GREEN)
+    ax[1].set_ylim(0, 85)
+    ax2 = ax[1].twinx()
+    ax2.plot(e8["res"], e8["cells_for_10pct"], "s--", color=ORANGE, lw=1.8, ms=5)
+    ax2.set_yscale("log")
+    ax2.set_ylabel("Cells needed for 10% of points (log)", color=ORANGE)
+    ax2.grid(False)
+    ax[1].set_title("(b) Support collapses, cost explodes")
+    despine(ax[1])
+
+    # (c) 三条判据的推荐档
+    rows = [("J1 reliability\n(O$_r$ ≥ 0.90)", s8["criteria"]["J1_reliability"]["recommend"]),
+            ("J2 support\n(n ≥ 30 in ≥ 50%)", s8["criteria"]["J2_support"]["recommend"]),
+            ("J3 local variance\n(LV trough)", s8["criteria"]["J3_local_variance"]["recommend"])]
+    ax[2].axvspan(4.6, 7.4, color=NAVY, alpha=0.07)
+    for i, (name, rec) in enumerate(rows):
+        y = len(rows) - 1 - i
+        ax[2].hlines(y, 3.3, 9.5, color="#cfd6df", lw=1.2, zorder=0)
+        ax[2].scatter([rec], [y], s=210, color=TEAL, zorder=3, edgecolors="white")
+        ax[2].text(3.22, y + 0.18, name, fontsize=8, va="bottom", color="#2b3a4a")
+        ax[2].text(rec, y - 0.32, f"res {rec}", fontsize=8.5, ha="center", color=TEAL)
+    ax[2].set_xlim(3.15, 9.6)
+    ax[2].set_ylim(-0.75, 2.95)
+    ax[2].set_yticks([])
+    ax[2].set_xticks(range(4, 10))
+    ax[2].set_xlabel("H3 resolution")
+    ax[2].set_title("(c) Three independent criteria agree on 5–7")
+    ax[2].grid(False)
+    despine(ax[2])
+    ax[2].text(6.4, -0.62, "no criterion supports res 8 or 9", fontsize=8,
+               ha="center", color=RED)
+
+    fig.savefig(f"{FIG}/fig9_crosscheck.png")
+    plt.close(fig)
+    print("fig9 done")
+
+
 if __name__ == "__main__":
     fig1_area_lat()
     fig2_rsc()
@@ -346,4 +496,6 @@ if __name__ == "__main__":
     fig5_sufficiency()
     fig6_temporal()
     fig7_grids()
+    fig8_persistence()
+    fig9_crosscheck()
     print(f"\n全部图已写入 {FIG}")

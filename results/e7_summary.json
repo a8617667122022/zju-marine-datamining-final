@@ -1,0 +1,40 @@
+{
+  "top_k": 100,
+  "levels": [
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "persist_threshold": 4,
+  "n_leaves": 653022,
+  "cells_by_longest_run": {
+    "0": 507268,
+    "1": 110046,
+    "2": 26600,
+    "3": 7092,
+    "4": 1535,
+    "5": 411,
+    "6": 70
+  },
+  "points_by_longest_run_pct": {
+    "0": 54.13,
+    "1": 22.37,
+    "2": 10.96,
+    "3": 5.8,
+    "4": 3.41,
+    "5": 1.76,
+    "6": 1.57
+  },
+  "persistent_cells": 2016,
+  "persistent_points_pct": 6.74,
+  "persistent_res7_cells": 90,
+  "share_leaves_never_hot_pct": 77.68,
+  "res9_top100_persistent_pct": 84.0,
+  "res7_top100_persistent_pct": 89.32,
+  "median_n_persistent": 25.0,
+  "median_n_transient": 1.0,
+  "median_n_never": 1.0
+}

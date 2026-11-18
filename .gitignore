@@ -16,3 +16,8 @@ Thumbs.db
 
 # 运行产物
 *.log
+
+# 可由 06_persistence.py 重建的中间结果（体积大）
+results/areas/
+results/e7_persistence_cells.parquet
+results/e7_persistent_res7.csv

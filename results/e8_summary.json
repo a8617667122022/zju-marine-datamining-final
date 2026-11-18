@@ -1,0 +1,41 @@
+{
+  "criteria": {
+    "J1_reliability": {
+      "rule": "最细 r 使 O_r >= 0.90",
+      "recommend": 7
+    },
+    "J2_support": {
+      "rule": "最细 r 使 n>=30 的单元占比 >= 50%",
+      "recommend": 5,
+      "threshold_sensitivity": {
+        "10%": 6,
+        "25%": 6,
+        "50%": 5
+      }
+    },
+    "J3_local_variance": {
+      "rule": "局部方差比 LV 的谷底档位",
+      "recommend": 7
+    }
+  },
+  "lv_curve": {
+    "4": 0.9216,
+    "5": 0.7073,
+    "6": 0.5307,
+    "7": 0.434,
+    "8": 0.6559,
+    "9": 0.7542
+  },
+  "cells_for_10pct": {
+    "4": 7,
+    "5": 22,
+    "6": 61,
+    "7": 174,
+    "8": 532,
+    "9": 1769
+  },
+  "agreement_span": [
+    5,
+    7
+  ]
+}

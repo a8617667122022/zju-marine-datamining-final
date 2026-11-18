@@ -24,7 +24,8 @@ H3 的等积优势只在全球尺度成立。
 ├── ai-log/                  与 AI 的全过程协作记录（按轮次，未删改）
 │   ├── 01-选题与方案确定.md
 │   ├── 02-实验推进与主线改写.md
-│   └── 03-原创点深化与自我纠错.md
+│   ├── 03-原创点深化与自我纠错.md
+│   └── 04-三判据交叉验证.md
 ├── report/
 │   ├── report.md            实验报告正文
 │   └── design.md            方案设计备忘
@@ -34,7 +35,9 @@ H3 的等积优势只在全球尺度成立。
 │   ├── 02_experiments.py    E1–E4
 │   ├── 03_e5_grids.py       E5：H3 / Geohash / 等经纬网格对照
 │   ├── 04_figures.py        出图
-│   ├── 05_reliability.py    E6：split-half 可靠性天花板与 SSI（原创点）
+│   ├── 05_reliability.py    E6：split-half 可靠性天花板与 SSI（原创点 A）
+│   ├── 06_persistence.py    E7：层级持久热点（原创点 B）
+│   ├── 07_crosscheck.py     E8：局部方差 / 支撑度 / 可靠性三判据（原创点 C）
 │   └── h3_advisor.py        选档判据工具（输出口径合同 JSON）
 ├── results/
 │   ├── *.csv                实验产物
@@ -52,6 +55,8 @@ H3 的等积优势只在全球尺度成立。
 | E4 | 切成 4 个 6 小时时段的稳健性 | `results/e4_temporal.csv` |
 | E5 | H3 vs Geohash vs 等经纬网格（局部 + 全球面积） | `results/e5_grids.csv`, `e5_area_global.csv` |
 | E6 | split-half 可靠性天花板与归一化尺度稳定指数 SSI | `results/e6_reliability.csv` |
+| E7 | 层级持久热点：寿命、持久核心、等质量对照 | `results/e7_summary.json`, `e7_birth_profile.csv` |
+| E8 | 局部方差比 / 支撑度 / 质量效率三判据 | `results/e8_crosscheck.csv` |
 
 ## 复现方式
 
@@ -66,6 +71,8 @@ python code/01_prepare.py
 python code/02_experiments.py
 python code/03_e5_grids.py
 python code/05_reliability.py
+python code/06_persistence.py
+python code/07_crosscheck.py
 # 4) 出图
 python code/04_figures.py
 # 5) 选档工具（可靠性模式）
@@ -81,6 +88,13 @@ python code/h3_advisor.py --input data/ais_moving.parquet --lat lat --lon lon --
   跨尺度一致率 C_r 只是它的等比例缩放，**SSI = C_r / O_r 稳定在 0.93–0.96**
 - 因此断崖约八成来自可靠性天花板，而非尺度效应；判据改为
   “取最细的 r，使 O_r ≥ ρ”，本数据在 ρ = 0.90 下推荐 **res 7**
+- **持久性验证（B）**：0.31% 的持久核心承载 **6.74%** 的点，中位样本量 25（瞬态仅 1）；
+  res 7 Top-100 的 89.3%、res 9 Top-100 的 84.0% 落在核心内——细档热点是“位置对、排序抖”
+- **口径敏感性**：固定 K=100 时 res 4 的 Top-100 覆盖 44.2% 的点、中位样本仅 1；
+  换成等质量口径后，跨档嵌套率从 0.85–0.90 降到 **0.33–0.60**，SSI 不可当普适常数
+- **特征尺度验证（C）**：局部方差比 LV 在 **res 7 触底（0.434）** 后回升，
+  与 split-half 独立吻合；三条判据（可靠性 / 支撑度 / LV）无一条支持 res 8 或 9
+- res 9 要覆盖 10% 的点需 **1,769** 个格（res 7 只需 174 个），且 99.4% 的格子样本不足 30
 - 全量口径在 res 8 已跌到 0.747（静止船占 80%，稀释更严重）
 - res 9 每格中位数 **1 个点**，仅 **0.6%** 的格子样本 ≥ 30
 - 三种网格的层次一致性量级相同（0.74–0.88）；面积均匀性在全球尺度上 H3 为 1.97× 极差
