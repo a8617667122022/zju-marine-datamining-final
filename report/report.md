@@ -73,7 +73,7 @@
 {
   "point_unit": "一条 AIS 报文（MMSI + 时间戳）",
   "B_primary": "SOG >= 3 kn 的航行船，1,415,790 条",
-  "A_control": "全量记录，8,156,xxx 条",
+  "A_control": "全量记录，8,156,509 条",
   "density": "count / cell_area_km2",
   "hotspot": "按密度排序的前 100 个单元",
   "time_window": "2023-01-01 全天，另切 4 个 6 小时时段做稳健性",
