@@ -47,6 +47,8 @@ def main() -> None:
     sig_rows = []
     for a, b in zip(rs, rs[1:]):
         diff = res_stats[a] - res_stats[b]
+        # 配对效应量 Cohen's d_z = 差值均值 / 差值标准差（同一批种子）
+        dz = float(diff.mean() / diff.std(ddof=1))
         t, p = stats.ttest_rel(res_stats[a], res_stats[b])
         try:
             _, pw = stats.wilcoxon(res_stats[a], res_stats[b])
@@ -54,6 +56,7 @@ def main() -> None:
             pw = np.nan
         sig_rows.append({
             "pair": f"{a}->{b}", "mean_diff": round(float(diff.mean()), 4),
+            "cohen_dz": round(dz, 2),
             "t": round(float(t), 2), "p_two_sided": float(p),
             "wilcoxon_p": float(pw) if not np.isnan(pw) else None,
         })
@@ -78,8 +81,8 @@ def main() -> None:
         print(f"  res {row['res']}: {row['O_r_mean']} [{row['O_r_ci_lo']}, {row['O_r_ci_hi']}]")
     print("\n相邻档配对 t 检验:")
     for row in sig_rows:
-        print(f"  {row['pair']}: diff={row['mean_diff']:+.3f} t={row['t']} "
-              f"p={row['p_two_sided']:.2e}")
+        print(f"  {row['pair']}: diff={row['mean_diff']:+.3f} dz={row['cohen_dz']:.2f} "
+              f"t={row['t']} p={row['p_two_sided']:.2e}")
 
     # 落盘，留痕
     pd.DataFrame(rows).to_csv(OUT, index=False)

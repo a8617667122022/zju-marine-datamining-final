@@ -25,7 +25,7 @@ RED, GRAY, GREEN = "#C1272D", "#8896A6", "#2E8B57"
 
 plt.rcParams.update({
     "figure.dpi": 160,
-    "savefig.dpi": 220,
+    "savefig.dpi": 600,
     "font.size": 10,
     "font.family": ["Microsoft YaHei", "DejaVu Sans"],
     "axes.titlesize": 11,
