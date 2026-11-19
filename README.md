@@ -61,7 +61,7 @@ H3 的等积优势只在全球尺度成立。
 ## 复现方式
 
 ```bash
-pip install duckdb h3 pandas numpy matplotlib pyarrow pygeohash
+pip install duckdb h3 pandas numpy matplotlib pyarrow pygeohash scipy
 
 # 1) 数据体检
 python code/00_data_check.py
@@ -75,7 +75,9 @@ python code/06_persistence.py
 python code/07_crosscheck.py
 # 4) 出图
 python code/04_figures.py
-# 5) 选档工具（可靠性模式）
+# 5) 统计显著性核查（O_r 的 95% CI 与相邻档配对 t 检验）
+python code/10_stat_ci.py
+# 6) 选档工具（可靠性模式）
 python code/h3_advisor.py --input data/ais_moving.parquet --lat lat --lon lon --min-overlap 0.90
 ```
 
