@@ -1,0 +1,54 @@
+{
+  "shift": "half cell edge; dlat fixed, dlon scaled by cos(lat)",
+  "metric": "overlap = |A∩B|/K（交集比例，另记 Jaccard）",
+  "rows": [
+    {
+      "res": 4,
+      "edge_km": 26.07,
+      "overlap100": 0.64,
+      "jaccard100": 0.4706,
+      "overlap10": 0.5,
+      "jaccard10": 0.3333
+    },
+    {
+      "res": 5,
+      "edge_km": 9.85,
+      "overlap100": 0.57,
+      "jaccard100": 0.3986,
+      "overlap10": 0.5,
+      "jaccard10": 0.3333
+    },
+    {
+      "res": 6,
+      "edge_km": 3.72,
+      "overlap100": 0.63,
+      "jaccard100": 0.4599,
+      "overlap10": 0.5,
+      "jaccard10": 0.3333
+    },
+    {
+      "res": 7,
+      "edge_km": 1.41,
+      "overlap100": 0.58,
+      "jaccard100": 0.4085,
+      "overlap10": 0.4,
+      "jaccard10": 0.25
+    },
+    {
+      "res": 8,
+      "edge_km": 0.53,
+      "overlap100": 0.6,
+      "jaccard100": 0.4286,
+      "overlap10": 0.5,
+      "jaccard10": 0.3333
+    },
+    {
+      "res": 9,
+      "edge_km": 0.2,
+      "overlap100": 0.6,
+      "jaccard100": 0.4286,
+      "overlap10": 0.3,
+      "jaccard10": 0.1765
+    }
+  ]
+}
