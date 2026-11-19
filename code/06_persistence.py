@@ -13,6 +13,8 @@
   results/e7_persistence_cells.parquet   每个 res9 叶子的寿命
   results/e7_persistent_res7.csv         聚合到 res7 的持久热点（用于地图）
   results/e7_summary.json                寿命分布与点数占比
+  results/e7_equal_mass_sets.csv         等质量口径的集合规模与覆盖率
+  results/e7_equal_mass_nesting.csv      等质量口径的跨档嵌套率
 """
 import json
 import os
@@ -179,9 +181,18 @@ def main():
         set_rows.append({"res": r, "k_cells": len(hots_em[r]),
                          "point_coverage_pct": round(cov, 3)})
     pd.DataFrame(set_rows).to_csv(f"{OUT}/e7_equal_mass_sets.csv", index=False)
+    nest_rows = []
+    for r in RES_LIST[1:]:
+        hit = sum(1 for c in hots_em[r]
+                  if h3.cell_to_parent(c, r - 1) in hots_em[r - 1])
+        nest_rows.append({"res": r, "prev_res": r - 1,
+                          "k_cells": len(hots_em[r]), "nested_cells": hit,
+                          "nesting_rate": round(hit / len(hots_em[r]), 4)})
+    pd.DataFrame(nest_rows).to_csv(f"{OUT}/e7_equal_mass_nesting.csv", index=False)
     em = {
         "rule": f"equal-mass: 累计覆盖 {Q:.0%} 点数的最少单元集合",
         "sets": set_rows,
+        "nesting": nest_rows,
         "persistent_cells": int(core_em.sum()),
         "persistent_points_pct": round(
             float(out.loc[core_em, "n"].sum() / out["n"].sum() * 100), 2),

@@ -43,7 +43,7 @@ for name, (x, y) in ports.items():
                 fontsize=10, color="crimson")
 ax.set_xlim(-128, -66)
 ax.set_ylim(24, 50)
-ax.set_xlabel("经度（°E）")
+ax.set_xlabel("经度（°，西经为负）")
 ax.set_ylabel("纬度（°N）")
 ax.set_title("NOAA AIS 2023-01-01，B 口径（SOG≥3 kn）1,415,790 条报文的空间覆盖")
 ax.grid(alpha=0.25)
@@ -59,7 +59,7 @@ ax.plot(e9["res"], e9["overlap100"], "o-", label="Top-100 交集比例", lw=2)
 ax.plot(e9["res"], e9["jaccard100"], "s--", label="Top-100 Jaccard", lw=1.6, alpha=0.8)
 ax.plot(e9["res"], e9["overlap10"], "^--", label="Top-10 交集比例", lw=1.6, alpha=0.8)
 ax.axhspan(0.57, 0.64, color="tab:blue", alpha=0.10)
-ax.annotate("Top-100 平移税恒定在 0.57–0.64", xy=(6.5, 0.605), fontsize=10,
+ax.annotate("Top-100 平移税恒定在 0.57–0.64", xy=(6.5, 0.70), fontsize=10,
             color="tab:blue", ha="center")
 ax.annotate("res 9 的 Top-10 仅 0.30", xy=(9, 0.30), xytext=(7.6, 0.22),
             fontsize=10, arrowprops=dict(arrowstyle="->", lw=1))
@@ -112,8 +112,9 @@ bp = ax.boxplot(data, positions=RES_LIST, widths=0.55, patch_artist=True,
 means = [np.mean(v) for v in data]
 ax.plot(RES_LIST, means, "D-", color="tab:orange", lw=1.6, ms=5, label="均值")
 for r, v in zip(RES_LIST, data):
-    ax.annotate(f"{np.mean(v):.3f}", (r, np.mean(v)), textcoords="offset points",
-                xytext=(10, -12), fontsize=9, color="tab:orange")
+    ax.annotate(f"{np.floor(np.mean(v) * 1000 + 0.5) / 1000:.3f}", (r, np.mean(v)),
+                textcoords="offset points", xytext=(10, -12), fontsize=9,
+                color="tab:orange")
 ax.axhline(0.90, color="gray", ls=":", lw=1.2)
 ax.annotate("ρ = 0.90", xy=(4.15, 0.905), fontsize=10, color="gray")
 ax.set_xticks(RES_LIST)
@@ -137,7 +138,7 @@ for res in RES_LIST:
     areas = {c: h3.cell_area(c, unit="km^2") for c in uniq}
     s = pd.Series(cells).value_counts()
     d = (s / pd.Series(areas).reindex(s.index)).sort_values(ascending=False)
-    cum = d.cumsum() / d.sum()
+    cum = s.reindex(d.index).cumsum() / s.sum()
     for k in pareto_ks:
         if k <= len(cum):
             share = float(cum.iloc[k - 1])
@@ -156,8 +157,8 @@ for c, (res, g) in zip(colors, pareto.groupby("res")):
             label=f"res {res}")
     g100 = g[g["k"] == 100]["point_share"]
     if len(g100):
-        ax.scatter([100], g100, color=c, s=46, zorder=5,
-                   edgecolors="white", linewidths=1.2)
+        ax.scatter([100], g100, color=c, s=105, zorder=5,
+                   edgecolors="white", linewidths=2.0)
 ax.set_xscale("log")
 ax.set_xlabel("Top-k 热点格数量（对数轴）")
 ax.set_ylabel("覆盖点数占比")

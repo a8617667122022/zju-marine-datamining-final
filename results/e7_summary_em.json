@@ -32,6 +32,43 @@
       "point_coverage_pct": 1.03
     }
   ],
+  "nesting": [
+    {
+      "res": 5,
+      "prev_res": 4,
+      "k_cells": 1,
+      "nested_cells": 0,
+      "nesting_rate": 0.0
+    },
+    {
+      "res": 6,
+      "prev_res": 5,
+      "k_cells": 2,
+      "nested_cells": 1,
+      "nesting_rate": 0.5
+    },
+    {
+      "res": 7,
+      "prev_res": 6,
+      "k_cells": 5,
+      "nested_cells": 3,
+      "nesting_rate": 0.6
+    },
+    {
+      "res": 8,
+      "prev_res": 7,
+      "k_cells": 11,
+      "nested_cells": 2,
+      "nesting_rate": 0.1818
+    },
+    {
+      "res": 9,
+      "prev_res": 8,
+      "k_cells": 13,
+      "nested_cells": 10,
+      "nesting_rate": 0.7692
+    }
+  ],
   "persistent_cells": 0,
   "persistent_points_pct": 0.0,
   "median_n_persistent": NaN,

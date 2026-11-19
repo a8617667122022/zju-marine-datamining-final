@@ -219,7 +219,7 @@ def fig4_hotspots():
         ax.set_ylim(PORT[2], PORT[3])
         ax.set_aspect("equal", adjustable="box")
         ax.set_title(f"res {res} —— {len(sub):,} 个占用单元")
-        ax.set_xlabel("经度")
+        ax.set_xlabel("经度（°，西经为负）")
         ax.set_ylabel("纬度")
         despine(ax)
 
@@ -384,7 +384,7 @@ def fig8_persistence():
     ax.set_xlim(-128, -72)
     ax.set_ylim(23, 50)
     ax.set_aspect("equal", adjustable="box")
-    ax.set_xlabel("经度")
+    ax.set_xlabel("经度（°，西经为负）")
     ax.set_ylabel("纬度")
     ax.set_title("（b）持久核心（聚合至 res 7），点面积与点数成正比")
     cb = fig.colorbar(sc, ax=ax, fraction=0.022, pad=0.012, aspect=28)

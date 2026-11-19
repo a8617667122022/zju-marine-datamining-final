@@ -52,8 +52,9 @@ ax.boxplot(data, positions=RES_LIST, widths=0.55, patch_artist=True,
 means = [np.mean(v) for v in data]
 ax.plot(RES_LIST, means, "D-", color="tab:orange", lw=1.6, ms=5, label="均值")
 for r, v in zip(RES_LIST, data):
-    ax.annotate(f"{np.mean(v):.3f}", (r, np.mean(v)), textcoords="offset points",
-                xytext=(10, -12), fontsize=9, color="tab:orange")
+    ax.annotate(f"{np.floor(np.mean(v) * 1000 + 0.5) / 1000:.3f}", (r, np.mean(v)),
+                textcoords="offset points", xytext=(10, -12), fontsize=9,
+                color="tab:orange")
 ax.axhline(0.90, color="gray", ls=":", lw=1.2)
 ax.annotate("ρ = 0.90", xy=(4.15, 0.905), fontsize=10, color="gray")
 ax.set_xticks(RES_LIST)

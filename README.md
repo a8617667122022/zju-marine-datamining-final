@@ -60,7 +60,7 @@ H3 的等积优势只在全球尺度成立。
 | E4 | 切成 4 个 6 小时时段的稳健性 | `results/e4_temporal.csv` |
 | E5 | H3 vs Geohash vs 等经纬网格（局部 + 全球面积） | `results/e5_grids.csv`, `e5_area_global.csv` |
 | E6 | split-half 可靠性天花板与归一化尺度稳定指数 SSI | `results/e6_reliability.csv` |
-| E7 | 层级持久热点：寿命、持久核心、等质量对照 | `results/e7_summary.json`, `e7_birth_profile.csv` |
+| E7 | 层级持久热点：寿命、持久核心、等质量对照与跨档嵌套率 | `results/e7_summary.json`, `e7_birth_profile.csv`, `e7_equal_mass_nesting.csv` |
 | E8 | 局部方差比 / 支撑度 / 质量效率三判据 | `results/e8_crosscheck.csv` |
 | E9 | 半格平移扰动：划区效应（MAUP）的固定税 | `results/e9_halfcell.csv`, `e9_summary.json` |
 | E10 | O_r 的 95% 置信区间、相邻档配对 t 检验与 Cohen's d_z | `results/e10_cr_ci.csv`, `e10_pairwise_tests.csv`, `e10_ci_significance.csv` |
